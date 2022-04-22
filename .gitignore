@@ -14,3 +14,4 @@ orca/
 core
 deepsnap-experimental/
 *.sh
+.gitignore
