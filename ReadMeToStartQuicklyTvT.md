@@ -40,7 +40,9 @@ You can train the encoder by ``python -m subgraph_matching.train ``
 
 
 
-This repo re-uses part of the code from 
+This repo re-uses part of the code from [snap-stanford/neural-subgraph-learning-GNN](https://github.com/snap-stanford/neural-subgraph-learning-GNN)
 
-[snap-stanford/neural-subgraph-learning-GNN]: https://github.com/snap-stanford/neural-subgraph-learning-GNN
+
+
+
 
