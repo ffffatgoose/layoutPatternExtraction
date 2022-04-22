@@ -1,0 +1,16 @@
+__pycache__/
+.idea/
+env/
+log/
+log-*/
+*.p
+*.png
+plots/
+data/
+runs/
+results/
+*.sw?
+orca/
+core
+deepsnap-experimental/
+*.sh
