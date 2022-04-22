@@ -40,10 +40,7 @@ def read_tu_data(folder, prefix):
         node_labels = read_file(folder, prefix, 'node_labels', torch.long)
         if node_labels.dim() == 1:
             node_labels = node_labels.unsqueeze(-1)
-        # node_labels = node_labels - node_labels.min(dim=0)[0] #########
-        node_labels = node_labels.unbind(dim=-1)
-        #node_labels = [F.one_hot(x, num_classes=-1) for x in node_labels]
-        node_labels = torch.cat(node_labels, dim=-1).to(torch.int64)
+        node_labels = node_labels.to(torch.int64)
         #pdb.set_trace()
     x = cat([node_labels, node_attributes])
 
@@ -54,13 +51,9 @@ def read_tu_data(folder, prefix):
         edge_labels = read_file(folder, prefix, 'edge_labels', torch.float)
         if edge_labels.dim() == 1:
             edge_labels = edge_labels.unsqueeze(-1)
-        # edge_labels = edge_labels - edge_labels.min(dim=0)[0] ###################
-        edge_labels = edge_labels.unbind(dim=-1)
-        #edge_labels = [F.one_hot(e, num_classes=-1) for e in edge_labels]
-        edge_labels = torch.cat(edge_labels, dim=-1).to(torch.float)
-    edge_attr = cat([edge_attributes, edge_labels])
 
-    #pdb.set_trace()
+        edge_labels = edge_labels.to(torch.float)
+    edge_attr = cat([edge_attributes, edge_labels])
 
     y = None
     if 'graph_attributes' in names:  # Regression problem.
@@ -180,8 +173,6 @@ class OwnDataset(InMemoryDataset):
         if self.data.edge_attr is not None and not use_edge_attr:
             num_edge_attributes = self.num_edge_attributes
             self.data.edge_attr = self.data.edge_attr[:, num_edge_attributes:]
-
-        # pdb.set_trace()
 
     @property
     def raw_dir(self):

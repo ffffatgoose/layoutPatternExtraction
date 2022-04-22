@@ -109,23 +109,20 @@ def pattern_growth(dataset, task, args):
         if task == "graph-truncate" and i >= 1000: break
         if not type(graph) == nx.Graph:
             # graph = pyg_utils.to_networkx(graph).to_undirected()
-            # pdb.set_trace()
 
+            # directed graph transform
             graph = pyg_utils.to_networkx(graph, node_attrs = ["x"], edge_attrs = ["edge_attr"])
 
         graphs.append(graph)
 
     args.use_whole_graphs = False
     print("whole graphs?",args.use_whole_graphs)
-    # pdb.set_trace()
 
     if args.use_whole_graphs:
         start_time = time.time()
-        # pdb.set_trace()
         neighs = graphs
     else:
         anchors = []
-
         if args.sample_method == "radial":
             for i, graph in enumerate(graphs):
                 print(i)
@@ -149,23 +146,20 @@ def pattern_growth(dataset, task, args):
                         neighs.append(neigh)
         elif args.sample_method == "tree":
             start_time = time.time()
+            # sample n_neighborhoods graph to compare/judge if subgraph or not
             for j in tqdm(range(args.n_neighborhoods)):
-                # pdb.set_trace()
                 graph, neigh = utils.sample_neigh(graphs,
                     random.randint(args.min_neighborhood_size,
                         args.max_neighborhood_size))
                 neigh = graph.subgraph(neigh)
                 neigh = nx.convert_node_labels_to_integers(neigh)
-                # neigh.add_edge(0, 0)
+                # neigh.add_edge(0, 0) # already added in data
                 neighs.append(neigh)
                 # print("node anchored:",args.node_anchored) false
                 if args.node_anchored:
                     neigh.add_edge(0, 0)
                     anchors.append(0)   # after converting labels, 0 will be anchor
 
-    # pdb.set_trace()
-    print("Before emb")
-    print(len(neighs))
     embs = []
     if len(neighs) % args.batch_size != 0:
         print("WARNING: number of graphs not multiple of batch size")
@@ -204,26 +198,21 @@ def pattern_growth(dataset, task, args):
     # visualize out patterns
     count_by_size = defaultdict(int)
 
-    # with open(r"C:\fatgoose\MSRA\codeForSync\buildGraphAndStatic\subgroup-data-better\shapeName_idx_dictreach-abso-10edge-decoder-delG-t3","r",encoding='utf-8') as f:
-    #     shapeName_idx_dict = eval(f.readline())
-    # shapeIdx_name_dict = dict(zip(shapeName_idx_dict.values(),shapeName_idx_dict.keys()))
-
-    # 204 config
+    # some file data to better visualization
+    # dataset204 config
     # with open(r"C:\fatgoose\MSRA\codeForSync\buildGraphAndStatic\subgroup-data\Origin_shapeName_idx_dicttype2-layoutGMN-decoder-withgroup-20333","r",encoding='utf-8') as f:
     #     shapeNameOrigin_idx_dict = eval(f.readline())
     # shapeIdx_OriginName_dict = dict(zip(shapeNameOrigin_idx_dict.values(), shapeNameOrigin_idx_dict.keys()))
-    # # pdb.set_trace()
     #
     # # graph_dictreach-abso-10edge-decoder-t2 graphIdx_file_dict
     # with open(r"C:\fatgoose\MSRA\codeForSync\buildGraphAndStatic\subgroup-data\graph_dicttype2-layoutGMN-decoder-withgroup-20333","r",encoding='utf-8') as f:
     #     graphIdx_file_dict = eval(f.readline())
 
+    # dataset205 config
     with open(r"./dataset/decoder-visualization/Origin_shapeName_idx_dicttype2-layoutGMN-decoder-withgroup-205","r",encoding='utf-8') as f:
         shapeNameOrigin_idx_dict = eval(f.readline())
     shapeIdx_OriginName_dict = dict(zip(shapeNameOrigin_idx_dict.values(), shapeNameOrigin_idx_dict.keys()))
-    # pdb.set_trace()
 
-    # graph_dictreach-abso-10edge-decoder-t2 graphIdx_file_dict
     with open(r"./dataset/decoder-visualization/graph_dicttype2-layoutGMN-decoder-withgroup-205","r",encoding='utf-8') as f:
         graphIdx_file_dict = eval(f.readline())
 
@@ -233,17 +222,14 @@ def pattern_growth(dataset, task, args):
             colors = ["red"] + ["blue"]*(len(pattern)-1)
             nx.draw(pattern, node_color=colors, with_labels=True)
         else:
-            # pdb.set_trace()
-
+            # delete one path between two nodes,for display two edges together can not see edge clearly
             delete_edge_set = set()
             for edge_i in pattern.edges:
                 if pattern.has_edge(edge_i[1],edge_i[0]):
                     if pattern[edge_i[0]][edge_i[1]]['edge_attr'][-1] >= 7:
                         delete_edge_set.add((edge_i[0],edge_i[1]))
-                        # pattern.remove_edge(edge_i[0],edge_i[1])
                     else:
                         delete_edge_set.add((edge_i[1], edge_i[0]))
-                        # pattern.remove_edge(edge_i[1], edge_i[0])
             for node_i,node_j in delete_edge_set:
                 print(node_i,node_j)
                 pattern.remove_edge(node_i,node_j)
@@ -251,7 +237,7 @@ def pattern_growth(dataset, task, args):
             pos = nx.spring_layout(pattern)
             nx.draw(pattern, pos)
             node_labels_idx = nx.get_node_attributes(pattern, 'x')
-            # pdb.set_trace()
+
             node_labels_name = {key:shapeIdx_OriginName_dict[int(value[-2])] for key,value in node_labels_idx.items()}
             nx.draw_networkx_labels(pattern, pos, labels=node_labels_name,font_size=10)
             edge_labels_idx = nx.get_edge_attributes(pattern, 'edge_attr')
@@ -261,19 +247,16 @@ def pattern_growth(dataset, task, args):
             for key, value in node_labels_idx.items():
                 tmp_graph_idx = int(value[-1])
                 break
-            # plt.text(0,0,str(graphIdx_file_dict[tmp_graph_idx-1]),color='r')
+            # plt.text(0,0,str(graphIdx_file_dict[tmp_graph_idx-1]),color='r') # dataset 204,205 from same layout
 
             # plt.show()
 
-            # pdb.set_trace()
 
         plt.savefig("plots/cluster/{}-{}-201-205-test1.png".format(len(pattern),
                                                      count_by_size[len(pattern)]))
         print("Saving plots/cluster/{}-{}-201-205-test1.png".format(len(pattern),
             count_by_size[len(pattern)]))
 
-        # plt.savefig("plots/cluster/{}-{}.pdf".format(len(pattern),
-        #     count_by_size[len(pattern)]))
         plt.close()
         count_by_size[len(pattern)] += 1
 
@@ -340,16 +323,6 @@ def main():
     elif args.dataset == "arxiv":
         dataset = PygNodePropPredDataset(name = "ogbn-arxiv")
         task = "graph"
-    elif args.dataset == "vaultSubgroup":
-        dataset = OwnDataset(root='./dataset/vaultnoSampleDecoder', name='vaultnoSampleDecoder',use_node_attr=True,use_edge_attr=True)
-        task = "graph"
-    elif args.dataset == "vaultSubgroupDelG": ####last time
-        dataset = OwnDataset(root='./dataset/vaultnoSampleDecoderDelG', name='vaultnoSampleDecoderDelG',use_node_attr=True,use_edge_attr=True)
-        task = "graph"
-    elif args.dataset == 'subgroupBalanced':#vaultnoSampleDecoderDelG
-        dataset = OwnDataset(root='./dataset/vaultBALANCEposA', name='vaultBALANCEposA', use_node_attr=True,
-                              use_edge_attr=True)
-        task = "graph"
     elif args.dataset == 'vaulttype2GMN04posA':#vaultnoSampleDecoderDelG
         dataset = OwnDataset(root='./dataset/vaulttype2GMN04posA', name='vaulttype2GMN04posA', use_node_attr=True,
                              use_edge_attr=True)
@@ -384,7 +357,6 @@ def main():
         task = "graph"
 
 
-    # pdb.set_trace()
     pattern_growth(dataset, task, args) 
 
 if __name__ == '__main__':

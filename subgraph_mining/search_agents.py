@@ -255,6 +255,7 @@ class MCTSSearchAgent(SearchAgent):
                 print("- outputting", count, "motifs of size", pattern_size)
         return cand_patterns_uniq
 
+# in use
 class GreedySearchAgent(SearchAgent):
     def __init__(self, min_pattern_size, max_pattern_size, model, dataset,
         embs, node_anchored=False, analyze=False, rank_method="counts",
@@ -296,6 +297,7 @@ class GreedySearchAgent(SearchAgent):
             visited = set([start_node])
             beams.append([(0, neigh, frontier, visited, graph_idx)])
 
+            #### one-node graph frontier choosing
             # frontier_origin = list(set(graph.neighbors(start_node)) - set(neigh))
             # current_neigh_emb = self.model.emb_model(
             #     utils.batch_nx_graphs([graph.subgraph(neigh)], anchors=[neigh[0]] if self.node_anchored else None))
@@ -355,12 +357,6 @@ class GreedySearchAgent(SearchAgent):
                         anchors=anchors[i:i+128] if self.node_anchored else
                         None, mode='Decoder')))
 
-                # neigh_anchor = []
-                # if self.node_anchored:
-                #     neigh_anchor.append(neigh[0])
-                # # pdb.set_trace()
-                # current_neigh_emb = self.model.emb_model(utils.batch_nx_graphs([graph.subgraph(neigh)],anchors=neigh_anchor if self.node_anchored else None))
-
                 cand_embs = torch.cat(cand_embs)
                 best_score, best_node = float("inf"), None
 
@@ -387,25 +383,11 @@ class GreedySearchAgent(SearchAgent):
                         best_score = score
                         best_node = cand_node
 
-                    # pdb.set_trace()
 
                     '''
                     Frontier choosing
                     '''
-                    # pdb.set_trace()
-                    # choosing_result = self.model.predict((current_neigh_emb, cand_emb))
-                    # choosing_result1 = self.model.clf_model(choosing_result.unsqueeze(1))
-                    # choosing_result2 = torch.argmax(choosing_result1, axis=1)
-                    # choosing_result3 = torch.sum(choosing_result2).item()
-                    #
-                    # cand_choosing_neighs.append(neigh + [cand_node])
-                    # cand_choosing_hiddens.append(choosing_result)
-                    # cand_choosing_result.append(choosing_result3)
-
-
-
                     new_frontier_origin = list(((set(frontier) |set(graph.neighbors(cand_node))) - visited) - set([cand_node]))
-
 
                     tmp_cand_neigh, tmp_cand_anchors = [],[]
                     for tmp_cand_node in new_frontier_origin:
@@ -418,8 +400,6 @@ class GreedySearchAgent(SearchAgent):
                     choosing_result2 = torch.argmax(choosing_result1, axis=1)
                     choosing_result3 = torch.sum(choosing_result2).item()
 
-                    # pdb.set_trace()
-
                     if choosing_result3 >= 1:
                         new_frontier = []
                         nozero_index_cand = torch.nonzero(choosing_result2, as_tuple=False).view(1, -1).tolist()[0]
@@ -429,26 +409,14 @@ class GreedySearchAgent(SearchAgent):
                         new_beams.append((
                             score, neigh + [cand_node],
                             new_frontier, visited | set([cand_node]), graph_idx))
-                print("\n",graph_idx,":")
-                for i in range(len(new_beams)):
-                    print(new_beams[i])
-
-
-                # for iii in range(len(cand_choosing_result)):
-                #     print(cand_choosing_neighs[iii],cand_choosing_hiddens[iii],cand_choosing_result[iii])
-
-                # pdb.set_trace()
-            print()
-            # pdb.set_trace()
+                # print("\n",graph_idx,":")
+                # for i in range(len(new_beams)):
+                #     print(new_beams[i])
 
             tmp_beams_list = list(sorted(new_beams, key=lambda x:
                 x[0]))
             new_beams = tmp_beams_list[:self.n_beams]
-            if len(neigh) >6:
-                for i in range(len(tmp_beams_list)):
-                    print(tmp_beams_list[i])
-                print()
-            # pdb.set_trace()
+
             for score, neigh, frontier, visited, graph_idx in new_beams[:1]:
                 graph = self.dataset[graph_idx]
                 # add to record

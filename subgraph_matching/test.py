@@ -46,8 +46,6 @@ def validation(args, model, test_pts, logger, batch_n, epoch, verbose=False):
             pred = model(emb_as, emb_bs)
             raw_pred = model.predict(pred)
 
-            # pdb.set_trace()
-
             if USE_ORCA_FEATS:
                 import orca
                 import matplotlib.pyplot as plt
@@ -68,8 +66,6 @@ def validation(args, model, test_pts, logger, batch_n, epoch, verbose=False):
             if args.method_type == "order":
                 pred = model.clf_model(raw_pred.unsqueeze(1)).argmax(dim=-1)
                 raw_pred *= -1
-
-                # pdb.set_trace()
 
             elif args.method_type == "ensemble":
                 pred = torch.stack([m.clf_model(
@@ -105,13 +101,6 @@ def validation(args, model, test_pts, logger, batch_n, epoch, verbose=False):
     auroc = roc_auc_score(labels, raw_pred)
     avg_prec = average_precision_score(labels, raw_pred)
     tn, fp, fn, tp = confusion_matrix(labels, pred).ravel()
-
-    '''
-    # print the predict result for test case study
-    for idx in range(64):
-        print(idx,":",pred[idx] == labels[idx])
-    pdb.set_trace()
-    '''
 
 
     if verbose:

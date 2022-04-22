@@ -7,7 +7,6 @@ import torch
 from torch.utils.data import Dataset
 
 def findSubgraphGT(graph, subgraph):
-    #print(graph.edges, graph.nodes, subgraph.edges, subgraph.nodes)
     matcher = nx.algorithms.isomorphism.GraphMatcher(graph, subgraph,
         node_match=lambda a, b: a["label"] == b["label"])
     return matcher.subgraph_isomorphisms_iter()
@@ -19,20 +18,6 @@ def toGT(adj, feat):
     for v in G.nodes:
         G.nodes[v]["label"] = tuple(feat[v,:].tolist())
     return G
-
-#def findSubgraphGT(graph, subgraph):
-#    vm = gtt.subgraph_isomorphism(subgraph, graph, vertex_label=(
-#	subgraph.vp['label'], graph.vp['label']), max_n=0)
-#    return vm
-#
-#def toGT(adj, feat):
-#    G = Graph()
-#    G.add_edge_list(np.transpose(adj.nonzero()))
-#    labels = G.new_vertex_property('vector<int>')
-#    for idx in G.get_vertices():
-#        labels[idx] = feat[idx,:].tolist()
-#    G.vertex_properties['label'] = labels
-#    return G
 
 class BaseDataset(Dataset):
     def __init__(self):

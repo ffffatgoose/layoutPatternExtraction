@@ -47,30 +47,7 @@ def parse_encoder(parser, arg_str=None):
         help='tag to identify the run')
     enc_parser.add_argument('--mode',type=str,
                             help='encoder mode or decoder/inference mode')
-    '''
-    enc_parser.set_defaults(conv_type='SAGE',
-                        method_type='order',
-                        dataset='syn',
-                        n_layers=8,
-                        batch_size=64,
-                        hidden_dim=64,
-                        skip="learnable",
-                        dropout=0.0,
-                        n_batches=1000000,
-                        opt='adam',   # opt_enc_parser
-                        opt_scheduler='none',
-                        opt_restart=100,
-                        weight_decay=0.0,
-                        lr=1e-4,
-                        margin=0.1,
-                        test_set='',
-                        eval_interval=1000,
-                        n_workers=4,
-                        model_path="ckpt/model.pt",#encoder-0905-e-d-00
-                        tag='',
-                        val_size=4096,
-                        node_anchored=False)
-    '''
+
     enc_parser.set_defaults(conv_type='tran',
                             method_type='order',
                             dataset="vaulttype2GMN0301",
@@ -80,7 +57,7 @@ def parse_encoder(parser, arg_str=None):
                             skip="learnable",
                             dropout=0.0,
                             n_batches=1000000,
-                            opt='adam',  # opt_enc_parser
+                            opt='adam',
                             opt_scheduler='none',
                             opt_restart=100,
                             weight_decay=0.0,
@@ -89,12 +66,9 @@ def parse_encoder(parser, arg_str=None):
                             test_set='',
                             eval_interval=1000,
                             n_workers=1,
-                            model_path=r"./ckpt/encoder-layoutGMN-201Micro-edge8-node6-corrected-201.pt",#"ckpt/model.pt",  # encoder-0905-e-d-00
+                            model_path=r"./ckpt/encoder-layoutGMN-201Micro-edge8-node6-corrected-201.pt",
                             tag='',
                             val_size=4096,
-                            mode='Decoder',# 'Encoder' 'Decoder'
+                            mode='Encoder',# 'Encoder' 'Decoder'
                             node_anchored=False)
-
-    #return enc_parser.parse_args(arg_str)
-    #r"C:\fatgoose\MSRA\codeForSync\FSMwithEx\ckpts\ckpt-from-16\encoder-subgroup-bale-delG-EdgeDist2-tran-03-tanh.pt"n
 

@@ -272,17 +272,10 @@ def batch_nx_graphs(graphs, anchors=None,mode='Encoder'):
     for tmp_g in graphs:
         edge_labels_idx = nx.get_edge_attributes(tmp_g, 'edge_attr')
         if len(edge_labels_idx.keys()) == 0:
-            pdb.set_trace()
+            print("There's no edge in graph!!!")
         for edge_key, edge_item in edge_labels_idx.items():
             tensor_edge = torch.Tensor(edge_item)
             tmp_g.edges[edge_key[0], edge_key[1]]['edge_attr'] = tensor_edge
-        # if len(tmp_g) > 1:
-        #     edge_labels_idx = nx.get_edge_attributes(tmp_g, 'edge_attr')
-        #     if len(edge_labels_idx.keys()) == 0:
-        #         pdb.set_trace()
-        #     for edge_key, edge_item in edge_labels_idx.items():
-        #         tensor_edge = torch.Tensor(edge_item)
-        #         tmp_g.edges[edge_key[0], edge_key[1]]['edge_attr'] = tensor_edge
 
     # pdb.set_trace()
     batch = Batch.from_data_list(GraphDataset.list_to_graphs(graphs))

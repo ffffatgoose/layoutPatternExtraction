@@ -22,12 +22,6 @@ names = [
 def parse_txt_array(src, sep=None, start=0, end=None, dtype=None, device=None):
     src = [[float(x) for x in line.split(sep)[start:end]] for line in src]
     src = torch.tensor(src, dtype=dtype).squeeze()
-    # try:
-    #     src = [[float(x) for x in line.split(sep)[start:end]] for line in src]
-    #     src = torch.tensor(src, dtype=dtype).squeeze()
-    # except:
-    #     src = [[str(x) for x in line.split(sep)[start:end]] for line in src]
-    #     # src = torch.tensor(src, dtype=dtype).squeeze()
     return src
 
 def read_txt_array(path, sep=None, start=0, end=None, dtype=None, device=None):
@@ -46,22 +40,12 @@ def read_tu_data(folder, prefix):
     if 'node_attributes' in names:
         node_attributes = read_file(folder, prefix, 'node_attributes')
 
-        # pdb.set_trace()
     if 'node_labels' in names:
-        # pdb.set_trace()
         node_labels = read_file(folder, prefix, 'node_labels', torch.long)
         node_attr_graphIdx = read_file(folder, prefix, 'graph_indicator')
         node_labels = cat([node_labels.view(-1,1), node_attr_graphIdx.view(-1,1)])
 
-        # if node_labels.dim() == 1:
-        #     node_labels = node_labels.unsqueeze(-1)
-        # # node_labels = node_labels - node_labels.min(dim=0)[0] #########
-        # node_labels = node_labels.unbind(dim=-1)
-        # #node_labels = [F.one_hot(x, num_classes=-1) for x in node_labels]
-        # node_labels = torch.cat(node_labels, dim=-1).to(torch.int64)
-        # pdb.set_trace()
-    x = cat([node_attributes,node_labels]) ###@@ #fatgoose
-    #node_shapeName = node_attributes
+    x = cat([node_attributes,node_labels])
 
     edge_attributes, edge_labels = None, None
     if 'edge_attributes' in names:
@@ -70,14 +54,9 @@ def read_tu_data(folder, prefix):
         edge_labels = read_file(folder, prefix, 'edge_labels', torch.float)
         if edge_labels.dim() == 1:
             edge_labels = edge_labels.unsqueeze(-1)
-        # edge_labels = edge_labels - edge_labels.min(dim=0)[0] ###################
-        # edge_labels = edge_labels.unbind(dim=-1)
-        #edge_labels = [F.one_hot(e, num_classes=-1) for e in edge_labels]
-        # edge_labels = torch.cat(edge_labels, dim=-1).to(torch.float)
         edge_labels = edge_labels.to(torch.float)
     edge_attr = cat([edge_attributes, edge_labels])
 
-    #pdb.set_trace()
 
     y = None
     if 'graph_attributes' in names:  # Regression problem.
@@ -87,15 +66,14 @@ def read_tu_data(folder, prefix):
         _, y = y.unique(sorted=True, return_inverse=True)
 
     num_nodes = edge_index.max().item() + 1 if x is None else x.size(0)
-    # fatgoose special for decoder: 0420
+
+    # special for decoder inference : need one-node graph to have one edge
     # edge_index, edge_attr = remove_self_loops(edge_index, edge_attr)
     edge_index, edge_attr = coalesce(edge_index, edge_attr, num_nodes,
                                      num_nodes)
 
     data = Data(x=x, edge_index=edge_index, edge_attr=edge_attr, y=y)
     data, slices = split(data, batch)
-
-    # pdb.set_trace()
 
     return data, slices
 
@@ -132,9 +110,6 @@ def split(data, batch):
             slices['y'] = node_slice
         else:
             slices['y'] = torch.arange(0, batch[-1] + 2, dtype=torch.long)
-
-    # if data.node_shapeName is not None:
-    #     slices['node_shapeName'] = data['node_shapeName']
 
     return data, slices
 

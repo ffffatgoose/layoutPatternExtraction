@@ -454,16 +454,11 @@ class OrderEmbedder(nn.Module):
 
 class MLP(nn.Module):
     def __init__(self, h_sizes):
-        '''
-        :param h_sizes: a list of hidden layers; the last entry is the size of the output vector
-        :return:
-        '''
         super(MLP, self).__init__()
         self.hidden = nn.ModuleList()
         assert len(h_sizes) > 1
         for k in range(len(h_sizes)-1):
             self.hidden.append(nn.Linear(h_sizes[k], h_sizes[k+1]))
-
 
     def forward(self, x):
         for layer in self.hidden:
@@ -485,7 +480,7 @@ class SkipLastGNN(nn.Module):
         self.node_type_emb = nn.Sequential(nn.Embedding(110, hidden_dim),
                                            nn.ReLU(),
                                            nn.Dropout(drop_prob))
-        self.node_geometry_emb = MLP([5, 16, hidden_dim])  # ?????
+        self.node_geometry_emb = MLP([5, 16, hidden_dim])
         self.node_emb = MLP([hidden_dim * 2, hidden_dim])
 
         self.edge_emb = MLP([8,hidden_dim])
@@ -568,68 +563,47 @@ class SkipLastGNN(nn.Module):
             return SAGEConv
         elif model_type == "tran":
             return lambda i, h: pyg_nn.TransformerConv(i,h,edge_dim=64)
+            # return pyg_nn.TransformerConv
         else:
             print("unrecognized model type")
 
     def forward(self, data):
-        #if data.x is None:
-        #    data.x = torch.ones((data.num_nodes, 1), device=utils.get_device())
-
-        #x = self.pre_mp(x)
-        # pdb.set_trace()
         if self.feat_preprocess is not None:
             if not hasattr(data, "preprocessed"):
                 data = self.feat_preprocess(data)
                 data.preprocessed = True
         x, edge_index, batch = data.node_feature, data.edge_index, data.batch
-        # print(data)
-        # print("edge_label_index",data.edge_label_index)
-        #print(x.size())
-        # print(edge_index.size())
-        # print(batch.size())
 
-        # 扔掉了anchor的维度，在anchor等于false的时候，x[:0] 均为1
-        nodeType_tensor = x[:, 1]  # fatgoose
+        # remove anchor when node_anchored= False, x[:0] = torch.ones()
+        nodeType_tensor = x[:, 1]
         if self.mode == 'Encoder':
-            node_features = x[:, 2:]  # fatgoose
+            node_features = x[:, 2:]
             edge_attr = data.edge_attr
-            # pdb.set_trace()
         elif self.mode == 'Decoder':
-            node_features = x[:, 2:-2]  # fatgoose
-            edge_attr = data.edge_attr[:, :-1]  # fatgoose
-            # pdb.set_trace()
+            node_features = x[:, 2:-2]
+            edge_attr = data.edge_attr[:, :-1]
 
-        # node all
-        # pdb.set_trace()
+        # node feature layers
         node_type_after_embed = self.node_type_emb(nodeType_tensor.long())
         node_feat_after_embed = self.node_geometry_emb(node_features)
         x = torch.cat((node_type_after_embed.float(), node_feat_after_embed.float()), -1)
         x = self.node_emb(x)
 
-        # only for node type NO node position & size
+        # for only node type NO node position & size
         # x = self.node_type_emb(nodeType_tensor.long())
 
-        # print('x-size after pre-mp', x.size())  # [#nodes,64]
-
-
+        # edge feature layer
         edge_attr = torch.tanh(self.edge_emb(edge_attr.reshape(-1, 8))).squeeze()
-        #print("edges~:", edge_index.size(), edge_attr.size())
-        #pdb.set_trace()
 
         all_emb = x.unsqueeze(1)
         emb = x
         for i in range(len(self.convs_sum) if self.conv_type == "PNA" else len(self.convs)):
             if self.skip == 'learnable':  # True
-                # print("learn skip:",self.learnable_skip.size())
-                # skip_vals = self.learnable_skip[i,:i+1].unsqueeze(0).unsqueeze(-1)
                 if self.conv_type == "gated":
                     skip_vals = self.learnable_skip[i, i:i + 1].unsqueeze(0).unsqueeze(-1)
                 else:
                     skip_vals = self.learnable_skip[i, :i + 1].unsqueeze(0).unsqueeze(-1)
-                # print("skip vals:",skip_vals.size())
-                # print("all_emb:", all_emb.size())
                 curr_emb = all_emb * torch.sigmoid(skip_vals)
-                # print("curr_emb:",curr_emb.size())
                 curr_emb = curr_emb.view(x.size(0), -1)
 
                 if self.conv_type == "PNA":
@@ -637,20 +611,12 @@ class SkipLastGNN(nn.Module):
                                    self.convs_mean[i](curr_emb, edge_index),
                                    self.convs_max[i](curr_emb, edge_index)), dim=-1)
                 else:
-
                     if self.conv_type == "SAGE":
-                        # print("QAQ")
-                        # print("in skiplastGNN:", curr_emb.size(), edge_index.size())
                         x = self.convs[i](curr_emb, edge_index,
                                           edge_weight=edge_attr)  # mix neighbours, [#nodes,64] SAGEConv ####
                     elif self.conv_type == "tran":
-                        # print("qwq")
-                        # edge_attr_size = edge_attr.size()
-                        # edge_attr_tmp = F.relu(self.edge_emb(edge_attr.long().view(-1, 1))).squeeze()
-                        # print("edge_attr0:",edge_attr.size())
-                        # print("edge_attr1:",edge_attr_tmp.size())
                         x = self.convs[i](curr_emb, edge_index, edge_attr=edge_attr.float())
-                        # x = self.convs[i](curr_emb, edge_index)
+                        # x = self.convs[i](curr_emb, edge_index) # for NO edge feature
                     else:
                         x = self.convs[i](curr_emb, edge_index)
             elif self.skip == 'all':

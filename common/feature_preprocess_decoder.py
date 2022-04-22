@@ -166,7 +166,7 @@ class FeatureAugment(nn.Module):
             "dataset_attrs": dataset_attrs_fun,
             "node_attrs": node_attrs_fun}
 
-    def register_feature_fun(name, feature_fun):
+    def register_feature_fun(self,name, feature_fun):
         self.node_feature_funs[name] = feature_fun
 
     @staticmethod
@@ -233,7 +233,7 @@ class Preprocess(nn.Module):
             return self.dim_in + sum(
                     [aug_dim for aug_dim in FEATURE_AUGMENT_DIMS])
         elif AUGMENT_METHOD == 'add':
-            return dim_in
+            return self.dim_in
         else:
             raise ValueError('Unknown feature augmentation method {}.'.format(
                     AUGMENT_METHOD))

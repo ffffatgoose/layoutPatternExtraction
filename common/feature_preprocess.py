@@ -55,7 +55,6 @@ def compute_identity(edge_index, n, k):
                              device=edge_index.device)
     edge_index, edge_weight = pyg_utils.add_remaining_self_loops(
         edge_index, edge_weight, 1, n)
-    # 给点加上自循环 一般是为了利用node_feature
     adj_sparse = torch.sparse.FloatTensor(edge_index, edge_weight,
         torch.Size([n, n]))
     adj = adj_sparse.to_dense()
@@ -157,7 +156,7 @@ class FeatureAugment(nn.Module):
             "identity": identity_fun,
             "node_attrs": node_attrs_fun}
 
-    def register_feature_fun(name, feature_fun):
+    def register_feature_fun(self,name, feature_fun):
         self.node_feature_funs[name] = feature_fun
 
     @staticmethod

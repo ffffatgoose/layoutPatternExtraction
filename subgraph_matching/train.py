@@ -162,7 +162,7 @@ def train_loop(args):
 
     print("Using dataset {}".format(args.dataset))
 
-    #fatgoose 修改runs的命名
+    #TODO change runs name
     record_keys = ["conv_type", "n_layers", "hidden_dim",
         "margin", "dataset", "max_graph_size", "skip"]
     args_str = ".".join(["{}={}".format(k, v)
@@ -181,12 +181,6 @@ def train_loop(args):
     loaders = data_source.gen_data_loaders(args.val_size, args.batch_size,
         train=False, use_distributed_sampling=False)
 
-    # dataset_loader = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size, num_workers=args.num_workers,
-    #                                              sampler=sample_strategy)
-    # sample_strategy = torch.utils.data.sampler.WeightedRandomSampler([1.0 / len(dataset) for i in range(len(dataset))],
-    #                                                                  num_samples=args.batch_size * args.batch_ratio,
-    #                                                                  replacement=True)
-
     # generate test data
     idx_i = 0
     test_pts = []
@@ -201,7 +195,6 @@ def train_loop(args):
         neg_b = neg_b.to(torch.device("cpu"))
         test_pts.append((pos_a, pos_b, neg_a, neg_b))
         idx_i += 1
-    # pdb.set_trace()
 
     # workers = []
     # for i in range(args.n_workers):
@@ -216,17 +209,6 @@ def train_loop(args):
     else:
         batch_n = 0
         for epoch in range(args.n_batches // args.eval_interval):
-            # for i in range(args.eval_interval):
-            #     in_queue.put(("step", None))
-            # for i in range(args.eval_interval):
-            #     # msg, params = out_queue.get()
-            #     # train_loss, train_acc = params
-            #     train_loss, train_acc = train(args,model,logger,epoch * args.eval_interval + i)
-            #     print("Batch {}. Loss: {:.4f}. Training acc: {:.4f}".format(
-            #         batch_n, train_loss, train_acc), end="               \r")
-            #     logger.add_scalar("Loss/train", train_loss, batch_n)
-            #     logger.add_scalar("Accuracy/train", train_acc, batch_n)
-            #     batch_n += 1
             train_loss, train_acc = train(args, model, logger, epoch * args.eval_interval)
             print("Batch {}. Loss: {:.4f}. Training acc: {:.4f}".format(
                 batch_n, train_loss, train_acc), end="               \r")

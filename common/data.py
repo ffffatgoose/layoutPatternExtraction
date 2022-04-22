@@ -57,84 +57,6 @@ def load_dataset(name):
     elif name == "atlas":
         dataset = [g for g in nx.graph_atlas_g()[1:] if nx.is_connected(g)]
 
-    elif name == 'vault20':
-        dataset = OwnDataset(root='/tmp/vault20', name='vault20',use_node_attr=True,use_edge_attr=True)
-    elif name == 'vault200':
-        dataset = OwnDataset(root='/tmp/vault200', name='vault200',use_node_attr=True,use_edge_attr=True)
-    elif name == 'vault200Group':
-        dataset = OwnDataset(root='/tmp/vault200Group', name='vault200Group',use_node_attr=True,use_edge_attr=True)
-    elif name == 'vault200GroupOnly':
-        dataset = OwnDataset(root='/tmp/vault200GroupOnly', name='vault200GroupOnly',use_node_attr=True,use_edge_attr=True)
-    elif name == 'vault200GroupOnlyFullEdge':#vaulttest-back-group100
-        dataset = OwnDataset(root='/tmp/vault200GroupOnlyFullEdge', name='vault200GroupOnlyFullEdge',use_node_attr=True,use_edge_attr=True)
-    elif name == 'test1':#vaulttest-back-group100
-        dataset = OwnDataset(root='/tmp/vaulttest-front-group100', name='vaulttest-front-group100',use_node_attr=True,use_edge_attr=True)
-    elif name == 'test2':
-        dataset = OwnDataset(root='/tmp/vaulttest-front-simple100', name='vaulttest-front-simple100',use_node_attr=True,use_edge_attr=True)
-    elif name == 'test3':
-        dataset = OwnDataset(root='/tmp/vaulttest-back-group100', name='vaulttest-back-group100',use_node_attr=True,use_edge_attr=True)
-    elif name == 'test4':
-        dataset = OwnDataset(root='/tmp/vaulttest-back-simple100', name='vaulttest-back-simple100',use_node_attr=True,use_edge_attr=True)
-    elif name == 'subgroup10edge':
-        dataset1 = OwnDataset(root='./dataset/vaulttryposA', name='vaulttryposA',use_node_attr=True,use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaulttryposB', name='vaulttryposB', use_node_attr=True, use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaulttrynegA', name='vaulttrynegA', use_node_attr=True, use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaulttrynegB', name='vaulttrynegB', use_node_attr=True, use_edge_attr=True)
-    elif name == 'subgroupBalanced':
-        dataset1 = OwnDataset(root='./dataset/vaultBALANCEposA', name='vaultBALANCEposA',use_node_attr=True,use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaultBALANCEposB', name='vaultBALANCEposB', use_node_attr=True, use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaultBALANCEnegA', name='vaultBALANCEnegA', use_node_attr=True, use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaultBALANCEnegB', name='vaultBALANCEnegB', use_node_attr=True, use_edge_attr=True)
-    elif name == 'subgroupBalancedDelGroup':
-        dataset1 = OwnDataset(root='./dataset/vaultBALdelGroupposA', name='vaultBALdelGroupposA',use_node_attr=True,use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaultBALdelGroupposB', name='vaultBALdelGroupposB', use_node_attr=True, use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaultBALdelGroupnegA', name='vaultBALdelGroupnegA', use_node_attr=True, use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaultBALdelGroupnegB', name='vaultBALdelGroupnegB', use_node_attr=True, use_edge_attr=True)
-    elif name == 'subgroupBalancedDelGroupOnlyDisType201':#vaultBALdelGOnlyDisType201posB
-        dataset1 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType201posA', name='vaultBALdelGOnlyDisType201posA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType201posB', name='vaultBALdelGOnlyDisType201posB', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType201negA', name='vaultBALdelGOnlyDisType201negA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType201negB', name='vaultBALdelGOnlyDisType201negB', use_node_attr=True,
-                              use_edge_attr=True)
-    elif name == 'subgroupBalancedDelGroupOnlyDisType202Interval':#vaultBALdelGOnlyDisType201posB
-        dataset1 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType202IntervalposA', name='vaultBALdelGOnlyDisType202IntervalposA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType202IntervalposB', name='vaultBALdelGOnlyDisType202IntervalposB', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType202IntervalnegA', name='vaultBALdelGOnlyDisType202IntervalnegA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaultBALdelGOnlyDisType202IntervalnegB', name='vaultBALdelGOnlyDisType202IntervalnegB', use_node_attr=True,
-                              use_edge_attr=True)
-    elif name == 'subgroupBalancedDelGroupOnlyPositionType203':#vaultBALdelGOnlyDisType201posB
-        dataset1 = OwnDataset(root='./dataset/vaultBALdelGOnlyPosiType203posA', name='vaultBALdelGOnlyPosiType203posA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaultBALdelGOnlyPosiType203posB', name='vaultBALdelGOnlyPosiType203posB', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaultBALdelGOnlyPosiType203negA', name='vaultBALdelGOnlyPosiType203negA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaultBALdelGOnlyPosiType203negB', name='vaultBALdelGOnlyPosiType203negB', use_node_attr=True,
-                              use_edge_attr=True)
-    elif name == 'vaulttype2GMN02':#vault layoutGMN data
-        dataset1 = OwnDataset(root='./dataset/vaulttype2GMN02posA', name='vaulttype2GMN02posA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaulttype2GMN02posB', name='vaulttype2GMN02posB', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaulttype2GMN02negA', name='vaulttype2GMN02negA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaulttype2GMN02negB', name='vaulttype2GMN02negB', use_node_attr=True,
-                              use_edge_attr=True)
-    elif name == 'vaulttype2GMN03':#BETTER03 #vaultGMN101MicroPosB
-        dataset1 = OwnDataset(root='./dataset/vaulttype2GMN03posA', name='vaulttype2GMN03posA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset2 = OwnDataset(root='./dataset/vaulttype2GMN03posB', name='vaulttype2GMN03posB', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset3 = OwnDataset(root='./dataset/vaulttype2GMN03negA', name='vaulttype2GMN03negA', use_node_attr=True,
-                              use_edge_attr=True)
-        dataset4 = OwnDataset(root='./dataset/vaulttype2GMN03negB', name='vaulttype2GMN03negB', use_node_attr=True,
-                              use_edge_attr=True)
     elif name == 'vaultGMN101Micro':
         dataset1 = OwnDataset(root='./dataset/vaultGMN101MicroPosA', name='vaultGMN101MicroPosA', use_node_attr=True,
                               use_edge_attr=True)
@@ -196,9 +118,9 @@ def load_dataset(name):
         # print("len dataset:",len(dataset1),len(dataset2),len(dataset3),len(dataset4))
         # print(train_len1,train_len2)
         train, test = [], []
-        dataset = list(dataset1) + list(dataset2) +list(dataset3) +list(dataset4)
+        dataset = list(dataset1) + list(dataset2) + list(dataset3) + list(dataset4)
 
-        # random.shuffle(dataset)
+        # random.shuffle(dataset) #already
         has_name = hasattr(dataset[0], "name")
         for i, graph in tqdm(enumerate(dataset1)):
             if not type(graph) == nx.Graph:
@@ -214,12 +136,6 @@ def load_dataset(name):
                 graph_pos_b = pyg_utils.to_networkx(dataset2[i], node_attrs = ["x"], edge_attrs = ["edge_attr"])
                 graph_neg_a = pyg_utils.to_networkx(dataset3[i], node_attrs=["x"], edge_attrs=["edge_attr"])
                 graph_neg_b = pyg_utils.to_networkx(dataset4[i], node_attrs=["x"], edge_attrs=["edge_attr"])
-                # if i == 0 or i == 3276:
-                #     print("pos_a",graph_pos_a.nodes.data(),graph_pos_a.edges.data())
-                #     print("pos_b", graph_pos_b.nodes.data(), graph_pos_b.edges.data())
-                #     print("neg_a", graph_neg_a.nodes.data(), graph_neg_a.edges.data())
-                #     print("neg_b", graph_neg_b.nodes.data(), graph_neg_b.edges.data())
-                #     pdb.set_trace()
 
             if i < train_len1:
                 train.append(graph_pos_a)
@@ -233,7 +149,6 @@ def load_dataset(name):
                 test.append(graph_neg_a)
                 test.append(graph_neg_b)
 
-    # print(len(train),len(test))
     return train, test, task
 
 class DataSource:
@@ -456,7 +371,6 @@ class DiskDataSource(DataSource):
     def gen_batch(self, a, b, c, train, max_size=6, min_size=2, seed=None,filter_negs=False, sample_method="tree-pair",N = 0):
         #the origin setting is max_size=15, min_size=5, current setting used for better visualization,not for training
 
-        # print(N)
         batch_size = a
 
         train_set, test_set, task = self.dataset
@@ -470,115 +384,10 @@ class DiskDataSource(DataSource):
         N =N % 32
 
         for i in range(batch_size // 2):
-
             pos_a.append(graphs[N * batch_size * 2 + 4 * i])
             pos_b.append(graphs[N * batch_size * 2 + 4 * i +1])
             neg_a.append(graphs[N * batch_size * 2 + 4 * i +2])
             neg_b.append(graphs[N * batch_size * 2 + 4 * i +3])
-
-
-        # if seed is not None:
-        #     random.seed(seed)
-        #
-        # # generate the positive data (pos_b is a subgraph of pos_a)
-        # pos_a, pos_b = [], []
-        # pos_a_anchors, pos_b_anchors = [], []
-        # for i in range(batch_size // 2):
-        #     if sample_method == "tree-pair":
-        #         size = random.randint(min_size+1, max_size)
-        #         graph, a = utils.sample_neigh(graphs, size)
-        #         b = a[:random.randint(min_size, len(a) - 1)]
-        #     elif sample_method == "subgraph-tree":
-        #         graph = None
-        #         while graph is None or len(graph) < min_size + 1:
-        #             graph = random.choice(graphs)
-        #         a = graph.nodes
-        #         _, b = utils.sample_neigh([graph], random.randint(min_size,
-        #             len(graph) - 1))
-        #     if self.node_anchored:
-        #         anchor = list(graph.nodes)[0]
-        #         pos_a_anchors.append(anchor)
-        #         pos_b_anchors.append(anchor)
-        #     neigh_a, neigh_b = graph.subgraph(a), graph.subgraph(b)
-        #     pos_a.append(neigh_a)
-        #     pos_b.append(neigh_b)
-        #
-        #
-        #     # # save the generated test data to test different model with same data & visualization
-        #     # networkx.write_gpickle(neigh_a.copy(), "./test-data-T/test3-small/pos_a-" + str(i))
-        #     # networkx.write_gpickle(neigh_b.copy(), "./test-data-T/test3-small/pos_b-" + str(i))
-        #     #
-        #     # networkx.write_gpickle(neigh_a.copy(), "./test-data-T/test3-small/target/" + str(i))
-        #     # networkx.write_gpickle(neigh_b.copy(), "./test-data-T/test3-small/query/" + str(i))
-        #
-        #
-        # # generate the negative data (neg_b is not a subgraph of neg_a)
-        # neg_a, neg_b = [], []
-        # neg_a_anchors, neg_b_anchors = [], []
-        # while len(neg_a) < batch_size // 2:
-        #     if sample_method == "tree-pair":
-        #         size = random.randint(min_size+1, max_size)
-        #         graph_a, a = utils.sample_neigh(graphs, size)
-        #         graph_b, b = utils.sample_neigh(graphs, random.randint(min_size,
-        #             size - 1))
-        #     elif sample_method == "subgraph-tree":
-        #         graph_a = None
-        #         while graph_a is None or len(graph_a) < min_size + 1:
-        #             graph_a = random.choice(graphs)
-        #         a = graph_a.nodes
-        #         graph_b, b = utils.sample_neigh(graphs, random.randint(min_size,
-        #             len(graph_a) - 1))
-        #     if self.node_anchored:
-        #         neg_a_anchors.append(list(graph_a.nodes)[0])
-        #         neg_b_anchors.append(list(graph_b.nodes)[0])
-        #     neigh_a, neigh_b = graph_a.subgraph(a), graph_b.subgraph(b)
-        #     if filter_negs:
-        #         matcher = nx.algorithms.isomorphism.GraphMatcher(neigh_a, neigh_b)
-        #         if matcher.subgraph_is_isomorphic(): # a <= b (b is subgraph of a)
-        #             continue
-        #     neg_a.append(neigh_a)
-        #     neg_b.append(neigh_b)
-        #
-        #
-        #     # # save the generated test data to test different model with same data & visualization
-        #     # networkx.write_gpickle(neigh_a.copy(), "./test-data-T/test3-small/neg_a-" + str(len(neg_a)-1))
-        #     # networkx.write_gpickle(neigh_b.copy(), "./test-data-T/test3-small/neg_b-" + str(len(neg_b)-1))
-        #     #
-        #     # networkx.write_gpickle(neigh_a.copy(), "./test-data-T/test3-small/target/" + str(32+len(neg_a) - 1))
-        #     # networkx.write_gpickle(neigh_b.copy(), "./test-data-T/test3-small/query/" + str(32+len(neg_b) - 1))
-        #
-        #
-        # '''
-        # # load test data from file to test model
-        # pos_a, pos_b = [], []
-        # neg_a, neg_b = [], []
-        #
-        # neg_a_anchors, neg_b_anchors = [], []
-        # pos_a_anchors, pos_b_anchors = [], []
-        #
-        # for idx in range(batch_size // 2):
-        #     graph1 = networkx.read_gpickle("./test-data-T/test3/pos_a-" + str(idx))
-        #     pos_a.append(graph1)
-        #     graph2 = networkx.read_gpickle("./test-data-T/test3/pos_b-" + str(idx))
-        #     pos_b.append(graph2)
-        #
-        #     graph_a = networkx.read_gpickle("./test-data-T/test3/neg_a-" + str(idx))
-        #     neg_a.append(graph_a)
-        #     graph_b = networkx.read_gpickle("./test-data-T/test3/neg_b-" + str(idx))
-        #     neg_b.append(graph_b)
-        #
-        #     # anchor = list(graph2.nodes)[0]
-        #     # # pos_a_anchors.append(list(graph1.nodes)[0])
-        #     # pos_a_anchors.append(anchor)
-        #     # pos_b_anchors.append(anchor)
-        #     # neg_a_anchors.append(list(graph_a.nodes)[0])
-        #     # neg_b_anchors.append(list(graph_b.nodes)[0])
-        #
-        # # print(self.node_anchored)
-        # # pdb.set_trace()
-        # '''
-
-        # pdb.set_trace()
 
         pos_a = utils.batch_nx_graphs(pos_a, anchors=pos_a_anchors if
             self.node_anchored else None)
@@ -586,11 +395,6 @@ class DiskDataSource(DataSource):
             self.node_anchored else None)
         neg_a = utils.batch_nx_graphs(neg_a, anchors=neg_a_anchors if
             self.node_anchored else None)
-
-        # if train == True:
-        #     pdb.set_trace()
-        #     neg_b = utils.batch_nx_graphs(neg_b, anchors=neg_b_anchors if
-        #     self.node_anchored else None,flag=True)
         neg_b = utils.batch_nx_graphs(neg_b, anchors=neg_b_anchors if
             self.node_anchored else None)
         return pos_a, pos_b, neg_a, neg_b
